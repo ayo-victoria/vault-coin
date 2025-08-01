@@ -220,3 +220,54 @@
     (ok true)
   )
 )
+
+;; READ-ONLY QUERY FUNCTIONS - Analytics & Transparency
+
+;; Retrieve detailed vault position information
+(define-read-only (get-stake-info (staker principal))
+  (map-get? stakes { staker: staker })
+)
+
+;; Query lifetime reward distribution history
+(define-read-only (get-rewards-claimed (staker principal))
+  (map-get? rewards-claimed { staker: staker })
+)
+
+;; Get current yield rate configuration
+(define-read-only (get-reward-rate)
+  (var-get reward-rate)
+)
+
+;; Retrieve minimum lock period requirements
+(define-read-only (get-min-stake-period)
+  (var-get min-stake-period)
+)
+
+;; Check available treasury reserves
+(define-read-only (get-reward-pool)
+  (var-get reward-pool)
+)
+
+;; Monitor protocol total value locked (TVL)
+(define-read-only (get-total-staked)
+  (var-get total-staked)
+)
+
+;; Calculate real-time annual percentage yield
+(define-read-only (get-current-apy)
+  (let ((rate-basis (var-get reward-rate)))
+    ;; Convert basis points to percentage display
+    (* rate-basis u100)
+  )
+)
+
+;; Comprehensive protocol performance dashboard
+(define-read-only (get-protocol-stats)
+  {
+    total-staked: (var-get total-staked),
+    reward-pool: (var-get reward-pool),
+    reward-rate: (var-get reward-rate),
+    min-stake-period: (var-get min-stake-period),
+    current-apy: (get-current-apy),
+  }
+)
